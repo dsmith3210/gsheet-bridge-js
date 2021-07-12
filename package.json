@@ -1,0 +1,24 @@
+{
+  "name": "gsheet-bridge-js",
+  "version": "1.0.0",
+  "description": "Simple API for G**gle Sheets",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsmith3210/gsheet-bridge-js.git"
+  },
+  "keywords": [
+    "sheets",
+    "js"
+  ],
+  "author": "dsmith3210@github",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dsmith3210/gsheet-bridge-js/issues"
+  },
+  "homepage": "https://github.com/dsmith3210/gsheet-bridge-js#readme",
+  "dependencies": {
+    "googleapis": "^80.1.0"
+  }
+}
