@@ -106,7 +106,7 @@ module.exports = function(spreadsheetId, sheetName) {
     }
 
     async function _update(query, values) {
-        const data = await _query(query);
+        const data = await _query();
 
         if (data.length === 0) {
             console.log('0 rows returned for ', query);
@@ -118,6 +118,10 @@ module.exports = function(spreadsheetId, sheetName) {
 
         // go over existing rows
         for (const dataEntry of Object.entries(data)) {
+            const dataRow = dataEntry[1];
+            if (!dataMatchesQuery(dataRow, query)) {
+                continue;
+            }
             const dataRowIndex = Number(dataEntry[0]);
             // go over all properties in the update
             for (const prop in values) {
