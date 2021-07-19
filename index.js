@@ -132,9 +132,11 @@ module.exports = function(spreadsheetId, sheetName) {
             const dataRowIndex = Number(dataEntry[0]);
             // go over all properties in the update
             let updatedSomething = false;
+            let updatedDataRow = {...dataRow};
             for (const prop in values) {
                 if (!values.hasOwnProperty(prop)) continue;
                 const propValue = values[prop];
+                updatedDataRow[prop] = propValue;
                 // translate property key to sheet column number
                 const columnNumber = fields.indexOf(prop);
                 if (columnNumber === -1) {
@@ -149,7 +151,7 @@ module.exports = function(spreadsheetId, sheetName) {
                 });
             }
             if (updatedSomething) {
-                changedItems.push(dataRow);
+                changedItems.push(updatedDataRow);
             }
         }
 
