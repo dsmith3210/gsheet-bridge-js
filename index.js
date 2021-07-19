@@ -24,11 +24,17 @@ function zeroBasedColumnNumberToSpreadsheetColumnLetters(num) {
     return zeroBasedColumnNumberToSpreadsheetColumnLetters(remainder - 1) + letter;
 }
 
+function areEqual(a, b) {
+    if (a === b) return true;
+    if (!isNaN(Number(a)) && !isNaN(Number(b)) && Number(a) === Number(b)) return true;
+    return false;
+}
+
 function dataMatchesQuery(dataRow, query) {
     if (!query) return true;
     for (const prop in query) {
         if (!query.hasOwnProperty(prop)) continue;
-        if (dataRow[prop] !== query[prop]) return false;
+        if (!areEqual(dataRow[prop], query[prop])) return false;
     }
 
     return true;
@@ -115,6 +121,7 @@ module.exports = function(spreadsheetId, sheetName) {
 
         const fields = await _fields();
         const updateData = [];
+        const changedItems = [];
 
         // go over existing rows
         for (const dataEntry of Object.entries(data)) {
@@ -124,6 +131,7 @@ module.exports = function(spreadsheetId, sheetName) {
             }
             const dataRowIndex = Number(dataEntry[0]);
             // go over all properties in the update
+            let updatedSomething = false;
             for (const prop in values) {
                 if (!values.hasOwnProperty(prop)) continue;
                 const propValue = values[prop];
@@ -134,11 +142,14 @@ module.exports = function(spreadsheetId, sheetName) {
                 }
                 const columnLetters = zeroBasedColumnNumberToSpreadsheetColumnLetters(columnNumber);
                 const range = `${sheetName}!${columnLetters}${dataRowIndex + 2}`; // +1 because JS data is zero-based, sheet is 1-based. +1 because 1 row is header row.
-
+                updatedSomething = true;
                 updateData.push({
                     range,
                     values: [[propValue]]
                 });
+            }
+            if (updatedSomething) {
+                changedItems.push(dataRow);
             }
         }
 
@@ -150,6 +161,8 @@ module.exports = function(spreadsheetId, sheetName) {
                 data: updateData
             }
         });
+
+        return changedItems;
     }
 
     return {
